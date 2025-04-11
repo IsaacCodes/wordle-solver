@@ -1,35 +1,47 @@
-#Stores number of guesses something took
-with open("history.txt", "r") as f:
-  txt = f.read()
-  counts = txt.split("\n")
-  counts = [int(item) for item in counts if item != "X" and item != ""]
+class History():
+  def __init__(self):
+    self.recount()
 
-#Functions to store these
-def avg():
-  global counts
-  nums = list(filter(lambda n: n != "X", counts.copy()))
-  return round(sum(nums) / len(nums), 2)
+  def recount(self):
+    with open("history.txt", "r") as f:
+      self.counts_unfiltered = f.read().split("\n")
+    
+    self.counts: dict = { "X" : 0, "1" : 0, "2" : 0, "3" : 0, "4" : 0, "5" : 0, "6" : 0 }
+    total = 0
+    length = 0
 
-def individual():
-  global counts
-  indiv = f"""
-  1: {counts.count(1)} Times
-  2: {counts.count(2)} Times
-  3: {counts.count(3)} Times
-  4: {counts.count(4)} Times
-  5: {counts.count(5)} Times
-  6: {counts.count(6)} Times
-  """
-  return indiv
+    for count in self.counts_unfiltered:
+      self.counts[count] += 1
+      length += 1
+      if count.isdigit():
+        total += int(count)
 
-def failures():
-  global counts
-  return counts.count("X")
+    self.avg = round(total / length, 2)
 
-def add(num):
-  global txt
-  txt += f"{num}\n"
-  with open("history.txt", "w") as f:
-    f.write(txt)
+    self.individual = f"""
+1: {self.counts["1"]} Times
+2: {self.counts["2"]} Times
+3: {self.counts["3"]} Times
+4: {self.counts["4"]} Times
+5: {self.counts["5"]} Times
+6: {self.counts["6"]} Times
+"""
 
-  counts.append(num)
+  def print(self):
+    print(f"""
+-----History-----
+
+Average Score: {self.avg}
+Failures: {self.counts["X"]}
+
+Individual Counts: 
+{self.individual}""")
+    
+  def add(self, num):
+    with open("history.txt", "a") as f:
+      f.write(f"\n{num}")
+    self.recount()
+
+
+if __name__ == "__main__":
+  History().print()

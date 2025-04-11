@@ -1,6 +1,7 @@
 #A Python Wordle Clone!
 import random as r
-import history
+from history import History
+hist = History()
 
 #Returns colored (green, yellow, or red) string (using 256 colors)
 def color(msg, clr):
@@ -126,7 +127,7 @@ print(f"{colored}  {color(answer, 'green')}   {len(answers)}")
 
 if guess == answer:
   print(f"\nGuessed in 1! Wow!")
-  history.add(1)
+  hist.add(1)
   won = True
 else:
   won = False
@@ -143,16 +144,9 @@ for i in range(2, 7):
 
   if guess == answer:
     print(f"\nGuessed in {i}")
-    history.add(i)
+    hist.add(i)
     break
 
   if i == 6:
     print("\nNo more guesses")
-    history.add("X")
-
-
-print("\n\n ---History--- \n")
-print(f"Average Score: {history.avg()}")
-print(f"""Individual Counts: 
-      {history.individual()}""")
-print(f"Failure Count: {history.failures()}")
+    hist.add("X")
